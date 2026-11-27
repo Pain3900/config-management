@@ -70,6 +70,9 @@ std::string number_json(double number)
 std::string value_json(const Value& value)
 {
     if (const auto* number = std::get_if<double>(&value.data)) {
+        if (value.quote_numeric_literal) {
+            return quote_json(value.numeric_literal);
+        }
         return number_json(*number);
     }
     if (const auto* string = std::get_if<std::string>(&value.data)) {
@@ -109,17 +112,19 @@ Value* Config::number(const char* text, int line, int column)
     if (result.ec != std::errc{} || result.ptr != end) {
         throw ConfigError(line, column, "число вне допустимого диапазона");
     }
-    return keep(Value{value});
+    return keep(Value{value, std::string(digits)});
 }
 
-const Value& Config::lookup(const Value& name, int line, int column) const
+Value Config::lookup(const Value& name, int line, int column) const
 {
     const auto& key = as_string(name);
     const auto it = constants.find(key);
     if (it == constants.end()) {
         throw ConfigError(line, column, "неизвестная константа " + key);
     }
-    return it->second;
+    Value value = it->second;
+    value.quote_numeric_literal = !value.numeric_literal.empty();
+    return value;
 }
 
 void Config::declare(const Value& name, Value value, int line, int column)

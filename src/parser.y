@@ -51,7 +51,9 @@ value:
     ;
 
 array:
-    OPEN_ARRAY array_items CLOSE_ARRAY  { $$ = $2; }
+      OPEN_ARRAY array_items CLOSE_ARRAY  { $$ = $2; }
+    | OPEN_ARRAY array_items value CLOSE_ARRAY
+      { $$ = $2; items($$).push_back(std::move(*$3)); }
     ;
 
 array_items:

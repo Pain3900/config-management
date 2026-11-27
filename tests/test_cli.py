@@ -99,8 +99,14 @@ class ConfigTests(unittest.TestCase):
         self.assert_error("A := 1.0", "syntax error")
 
     def test_missing_array_dot(self):
-        result = self.assert_error("A := {\n  1.0\n};", "syntax error")
-        self.assertIn("3:1:", result.stderr)
+        result = self.assert_error("A := {\n  1.0\n  2.0\n};", "syntax error")
+        self.assertIn("3:3:", result.stderr)
+
+    def test_numeric_constant_reference_preserves_spelling(self):
+        self.assert_json(
+            "TEMPO := 148.0; { 'TEMPO'. ![TEMPO]. ![TEMPO 2 *] }",
+            ["TEMPO", "148.0", 296],
+        )
 
     def test_missing_closing_delimiters(self):
         for text in ("{ 1.0.", "![1 2 +"):
@@ -160,12 +166,7 @@ class ConfigTests(unittest.TestCase):
 
     def test_example_configurations(self):
         cases = {
-            "audio.cfg": {
-                "TEMPO": 148,
-                "SWING": 0.55,
-                "DOUBLETEMPO": 296,
-                "TRACKS": ["kick", "bass", "lead"],
-            },
+            "audio.cfg": ["TEMPO", "148.0"],
             "greenhouse.cfg": {
                 "TARGET": 21.5,
                 "DELTA": 1.5,

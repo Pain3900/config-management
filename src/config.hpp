@@ -11,6 +11,8 @@
 struct Value {
     using Array = std::vector<Value>;
     std::variant<double, std::string, Array> data;
+    std::string numeric_literal{};
+    bool quote_numeric_literal = false;
 };
 
 enum class Operator { add, subtract, multiply };
@@ -27,7 +29,7 @@ struct Config {
 
     Value* keep(Value value);
     Value* number(const char* text, int line, int column);
-    const Value& lookup(const Value& name, int line, int column) const;
+    Value lookup(const Value& name, int line, int column) const;
     void declare(const Value& name, Value value, int line, int column);
     std::string json() const;
 };
