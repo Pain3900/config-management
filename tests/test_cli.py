@@ -166,20 +166,25 @@ class ConfigTests(unittest.TestCase):
 
     def test_example_configurations(self):
         cases = {
-            "audio.cfg": ["TEMPO", "148.0"],
-            "greenhouse.cfg": {
-                "TARGET": 21.5,
-                "DELTA": 1.5,
-                "LOWEST": 20,
-                "HIGHEST": 23,
-                "ZONES": [["рассада", 20], ["томаты", 23]],
-            },
-            "delivery.cfg": {
-                "WAREHOUSE": "Северный склад",
-                "FEES": [320, 190, 250],
-                "ROUTEFEES": [190, 250, 320],
-                "ROUTES": ["A", "B", "C"],
-            },
+            "audio.cfg": [
+                ["TEMPO", "148.0"],
+                ["SWING", ".55"],
+                ["DOUBLETEMPO", 296],
+                ["TRACKS", ["kick", "bass", "lead"]],
+            ],
+            "greenhouse.cfg": [
+                ["TARGET", "21.5"],
+                ["DELTA", "1.5"],
+                ["LOWEST", 20],
+                ["HIGHEST", 23],
+                ["ZONES", [["рассада", 20], ["томаты", 23]]],
+            ],
+            "delivery.cfg": [
+                ["WAREHOUSE", "Северный склад"],
+                ["FEES", [320, 190, 250]],
+                ["ROUTEFEES", [190, 250, 320]],
+                ["ROUTES", ["A", "B", "C"]],
+            ],
         }
         for file, expected in cases.items():
             with self.subTest(file=file):
